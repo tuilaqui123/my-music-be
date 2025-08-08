@@ -14,7 +14,7 @@ export class PlaylistTrackEntity extends BaseEntity {
   @ManyToOne(() => PlaylistEntity, (playlist) => playlist.playlistTrack, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'genre_id' })
+  @JoinColumn({ name: 'playlis_id' })
   playlist: PlaylistEntity;
 
   @Column()
