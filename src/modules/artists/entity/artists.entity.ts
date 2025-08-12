@@ -7,9 +7,12 @@ export class ArtistsEntity extends BaseEntity {
   @OneToMany(() => TrackArtistEntity, (at) => at.artist)
   trackArtist: TrackArtistEntity[];
 
-  @Column({ type: 'bool', nullable: true })
+  @Column({ type: 'bool', nullable: true, default: false })
   favourite: boolean;
 
   @Column({ type: 'text', nullable: true })
   img_thumb: string;
+
+  @Column({ type: 'int', nullable: true })
+  total_tracks: number;
 }

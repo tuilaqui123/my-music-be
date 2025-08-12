@@ -21,9 +21,15 @@ export class TracksEntity extends BaseEntity {
   @Column({ type: 'text', nullable: false })
   file_path: string;
 
-  @Column({ type: 'bool', nullable: true })
+  @Column({ type: 'bool', nullable: true, default: false })
   favourite: boolean;
 
   @Column({ type: 'text', nullable: true })
   img_thumb: string;
+
+  @Column({ type: 'int', nullable: true, default: 0 })
+  streaming_time: number;
+
+  @Column({ type: 'float', nullable: true, default: 0 })
+  total_minutes: number;
 }

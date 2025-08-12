@@ -7,7 +7,7 @@ export class PlaylistEntity extends BaseEntity {
   @OneToMany(() => PlaylistTrackEntity, (pt) => pt.playlist)
   playlistTrack: PlaylistTrackEntity[];
 
-  @Column({ type: 'bool', nullable: true })
+  @Column({ type: 'bool', nullable: true, default: false })
   favourite: boolean;
 
   @Column({ type: 'text', nullable: true })
@@ -15,4 +15,10 @@ export class PlaylistEntity extends BaseEntity {
 
   @Column({ type: 'text', nullable: true })
   img_thumb: string;
+
+  @Column({ type: 'int', nullable: true, default: 0 })
+  streaming_time: number;
+
+  @Column({ type: 'float', nullable: true, default: 0 })
+  total_minutes: number;
 }

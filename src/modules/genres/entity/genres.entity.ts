@@ -8,9 +8,15 @@ export class GenresEntity extends BaseEntity {
   @OneToMany(() => TrackGenreEntity, (at) => at.genre)
   trackGenres: TrackGenreEntity[];
 
-  @Column({ type: 'bool', nullable: true })
+  @Column({ type: 'bool', nullable: true, default: false })
   favourite: boolean;
 
   @Column({ type: 'text', nullable: true })
   img_thumb: string;
+
+  @Column({ type: 'int', nullable: true })
+  total_tracks: number;
+
+  @Column({ type: 'float', nullable: true, default: 0 })
+  total_minutes: number;
 }

@@ -1,6 +1,5 @@
 import { Body, Get, Param, Post, Put, Delete } from '@nestjs/common';
 import { BaseService } from '../service/base.service';
-
 import { ObjectLiteral } from 'typeorm';
 
 export abstract class BaseController<T extends ObjectLiteral> {
@@ -16,8 +15,8 @@ export abstract class BaseController<T extends ObjectLiteral> {
     return this.service.findOne(id);
   }
 
-  @Post()
-  async create(@Body() data: any): Promise<T> {
+  async create(...args: any[]): Promise<T> {
+    const [data] = args;
     return this.service.create(data);
   }
 
