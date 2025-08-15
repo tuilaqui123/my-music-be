@@ -1,4 +1,4 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AppService } from './app.service';
 import { UploadsService } from './modules/uploads/uploads.service';
 import { UploadsDto } from './modules/uploads/uploads.dto';
@@ -15,7 +15,7 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('/upload')
+  @Post('/upload')
   uploadLink(@Body() body): any {
     return this.uploadService.uploads(body);
   }

@@ -1,30 +1,54 @@
 import { Injectable } from '@nestjs/common';
-import * as fs from 'fs';
-import * as path from 'path';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-import { StorageService } from 'src/modules/storage/storage.service';
-
-const execAsync = promisify(exec);
+import { spawn } from 'child_process';
+import { StorageService } from '../storage/storage.service';
 
 @Injectable()
 export class UploadsService {
   constructor(private storageService: StorageService) {}
-  async uploads(data: any): Promise<any> {
+
+  async uploads(data: any): Promise<string> {
     const MUSIC_DIR = this.storageService.getMp3Path();
     const THUMBNAIL_DIR = this.storageService.getThumbnailPath();
-    const cmd = `yt-dlp -o "${MUSIC_DIR}/%(title)s.%(ext)s" -x --audio-format mp3 --write-thumbnail --convert-thumbnails jpg "${data.link}"`;
 
-    await execAsync(cmd);
+    console.log('MUSIC_DIR:', MUSIC_DIR);
+    console.log('THUMBNAIL_DIR:', THUMBNAIL_DIR);
 
-    const files = fs.readdirSync(MUSIC_DIR).filter((f) => f.endsWith('.jpg'));
+    return new Promise((resolve, reject) => {
+      const args = [
+        '-o',
+        `${MUSIC_DIR}/%(title)s.%(ext)s`,
+        '--output',
+        `thumbnail:${THUMBNAIL_DIR}/%(title)s.%(ext)s`,
+        '-x',
+        '--audio-format',
+        'mp3',
+        '--write-thumbnail',
+        '--convert-thumbnails',
+        'jpg',
+        data.link,
+      ];
 
-    for (const file of files) {
-      const src = path.join(MUSIC_DIR, file);
-      const dest = path.join(THUMBNAIL_DIR, file);
-      fs.renameSync(src, dest);
-    }
 
-    return 'Downloaded successfully';
+      const child = spawn('yt-dlp', args, { shell: true });
+
+      // Log từng dòng stdout (tiến độ tải)
+      child.stdout.on('data', (data) => {
+        process.stdout.write(data.toString());
+      });
+
+      // Log stderr (lỗi hoặc thông tin thêm từ yt-dlp)
+      child.stderr.on('data', (data) => {
+        process.stderr.write(data.toString());
+      });
+
+      // Xử lý khi hoàn tất
+      child.on('close', (code) => {
+        if (code === 0) {
+          resolve('Downloaded successfully');
+        } else {
+          reject(new Error(`yt-dlp exited with code ${code}`));
+        }
+      });
+    });
   }
 }
